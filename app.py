@@ -40,7 +40,8 @@ if __name__ == "__main__":
   )
 
   try:
-    user_input = "What's the status of my uscis case?"
+    # user_input = "What's the status of my uscis case?"
+    user_input = input(">> ")
 
     context = dict()
     
