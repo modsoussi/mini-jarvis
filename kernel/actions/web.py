@@ -8,7 +8,7 @@ def bs(html: str) -> bs4.BeautifulSoup:
 
 def search(query: str) -> List[Any]:
   soup = get(f"https://www.google.com/search?q={urllib.parse.urlencode(dict(q=query))}")
-  return [link for link in soup.body.find_all("a") if link["href"].startswith("/url?")]
+  return [(link.string, link["href"]) for link in soup.body.find_all("a") if link["href"].startswith("/url?")]
 
 def get(url: str) -> bs4.BeautifulSoup:
   if url.startswith('/url?'):

@@ -1,5 +1,4 @@
 from kernel.agents.config import Config
-from colorama import Fore
 from typing import Dict
 import openai
 import tiktoken
@@ -9,43 +8,66 @@ class Agent:
     self.config = config
     openai.api_key = self.config.openai_key
     
+    if self.config.model is None:
+      raise Exception("Agent configuration model cannot be None")
+      
+    
 class CompletionAgent(Agent):
   def __init__(self, 
                config: Config,
                ):
     super().__init__(config)
-    self.tokenizer = tiktoken.encoding_for_model(self.config.completion_model)
+    self.tokenizer = tiktoken.encoding_for_model(self.config.model)
   
   def check_prompt_length(self, prompt):
     total_tokens = len(self.tokenizer.encode(prompt))
-    if total_tokens > 4097:
+    if total_tokens > (4097 - 1024):
+      print(prompt)
       raise Exception("Too many tokens")
   
-  def get_completion(self, prompt, context: Dict = None) -> str:
-    _prompt = """{}
-
-Input: 
-{}
-""".format(
-  self.config.system_prompt, 
-  prompt)
-
+  def get_completion(self, user_prompt: str, context: Dict = None) -> str:
+    prompt = user_prompt
+    
     if not context is None:
-      _prompt = """{}
-
-Context:{}      
-""".format(_prompt, '\n'.join([f"{k}:{v}" for k,v in context.items()]))
-
-    self.check_prompt_length(_prompt)
+      prompt = """{}
+      
+      Context:
+      {}
+      """.format(prompt, '\n - '.join([f"{k}:{v}" for k,v in context.items()]))
     
-    response = openai.Completion.create(
-      model=self.config.completion_model,
-      prompt=_prompt,
-      temperature=.2,
-      max_tokens=self.config.max_tokens,
-    )
+    self.check_prompt_length(prompt)
     
-    return response.choices[0].text
+    if self.config.model.startswith('text-'):
+      response = openai.Completion.create(
+        model=self.config.model,
+        prompt="""{}
+        
+        User: {}
+        """.format(self.config.system_prompt, prompt),
+        max_tokens=self.config.max_tokens,
+        temperature=.2,
+      )
+      
+      return response.choices[0].text
+    elif self.config.model.startswith('gpt-'):
+      messages = [
+        {
+          "role": "system",
+          "content": self.config.system_prompt,
+        },
+        {
+          "role": "user",
+          "content": prompt,
+        }
+      ]
+      
+      response = openai.ChatCompletion.create(
+        model=self.config.model,
+        messages=messages,
+        temperature=.2
+      )
+      
+      return response.choices[0].message.content
     
 class ChatAgent(Agent):
   def __init__(self,
@@ -72,9 +94,9 @@ class ChatAgent(Agent):
     self.check_messages_length()
         
     response = openai.ChatCompletion.create(
-      model=self.config.chat_model,
+      model=self.config.model,
       messages=self.messages,
-      stream=self.config.stream_chat,
+      stream=self.config.stream,
     )
         
     agent_response = {"role": "", "content": ""}

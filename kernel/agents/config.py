@@ -3,10 +3,9 @@ class Config:
     self, 
     openai_key=None, 
     system_prompt=None,
-    chat_model="gpt-3.5-turbo",
-    completion_model="text-davinci-003",
+    model=None,
     max_tokens=1024,
-    stream_chat=False,
+    stream=False,
     ):
     if openai_key is None:
       print("missing openai_key")
@@ -18,7 +17,6 @@ class Config:
     else:
       self.system_prompt = system_prompt
       
-    self.chat_model = chat_model
-    self.completion_model = completion_model
+    self.model = model
     self.max_tokens = max_tokens
-    self.stream_chat = stream_chat
+    self.stream = stream
