@@ -33,7 +33,7 @@ if __name__ == "__main__":
       
       User: What's the largest social app?
       
-      [web-search]
+      [google-search]
       [query] largest social app
       """
     )
@@ -71,10 +71,3 @@ if __name__ == "__main__":
       print("----")
   except EOFError:
     exit(0)
-  except AttributeError:
-    # print(relevant)
-    # if not match is None:
-    #   print(match)
-      
-    traceback.print_exc()
-    exit(1)
