@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List, Any, Dict
 import requests
 import urllib
 import bs4
@@ -16,3 +16,11 @@ def get(url: str) -> bs4.BeautifulSoup:
   
   response = requests.get(url)
   return bs(response.text)
+
+def post(url: str, data: Dict = None):
+  response = requests.post(url, data=data)
+  
+  if response.headers.get("content-type").startswith("text/html"):
+    return bs(response.text)
+
+  return response

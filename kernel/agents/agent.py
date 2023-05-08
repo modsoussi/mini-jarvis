@@ -33,7 +33,9 @@ class CompletionAgent(Agent):
       
       Context:
       {}
-      """.format(prompt, '\n - '.join([f"{k}:{v}" for k,v in context.items()]))
+      """.format(prompt, '\n - '.join([""]+[f"{k}:{v}" for k,v in context.items()]))
+    
+    # print(prompt)
     
     self.check_prompt_length(prompt)
     
