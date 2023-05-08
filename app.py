@@ -1,7 +1,6 @@
 import kernel
 import os
 import re
-import traceback
 
 from dotenv import load_dotenv
 
