@@ -1,6 +1,7 @@
 import kernel
 import os
 import re
+from bs4 import BeautifulSoup
 
 from dotenv import load_dotenv
 
@@ -23,7 +24,7 @@ if __name__ == "__main__":
       [other]
 
       If the action type is [google-search], output a [query].
-      If the action type is [web-browse], output a [url] and [method].
+      If the action type is [web-browse], output a [url] and [method], where method is an http method.
       If the action type is [ask-for-info], include a [prompt] param.
       
       Examples:
@@ -100,6 +101,9 @@ if __name__ == "__main__":
             context["Last Results"] = [text, forms]
           elif method == "POST":
             result = kernel.web.post(url, data=None)
+            if type(result) is BeautifulSoup:
+              result = result.body.text
+            
             context["Last Results"] = result
         elif action_type == "[ask-for-info]":
           m = re.search(r"(?s)(?:\w\s)*:?\s*(\[.*?\])\s*(.*)", parts[1])
