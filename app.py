@@ -15,13 +15,13 @@ if __name__ == "__main__":
       # model="text-davinci-003",
       model="gpt-3.5-turbo",
       system_prompt="""You are a helpful AI agent called MARKI. Given an input from the user, your job is to 
-      generate an action to perform next to address the user's need, taking into account any previous action and results.
-      When the Context is None, simply ignore it. 
+      generate an action to perform next to address the user's need, taking into account any previous actions and results.
+      When the Context is empty or None, simply ignore it. 
       Actions must accomplish a singular goal. You must be as specific as you possibly can.
       For every action you generate, prefix with it with one of the following action types:
       [google-search]: when a google search is required to proceed
       [web-browse]: when browsing is needed to proceed
-      [ask-for-info]: when you need to ask the user for more information
+      [ask-for-info]: when you need to ask the user to provide missing data
       [final-answer]: when you have an aswer to the user's input from the context.
       [other]: when the action is none of the above
 
@@ -52,12 +52,16 @@ if __name__ == "__main__":
     # user_input = "What's the status of my uscis case?"
     user_input = input(">> ")
 
-    context = {"Last Results": None }
+    context = {"Past Actions and Results": [] }
     
+    action_ord = 0
     while True:
+      results = {}
       print(f"***\nContext:\n{context}\n***")
       
       action = action_agent.get_completion(user_input, context)
+      action_ord += 1
+      results[f"Action #{action_ord}"] = action
       # print(action)
       parts = action.strip("\n").split("\n")
       
@@ -72,8 +76,8 @@ if __name__ == "__main__":
           if len(m.groups()) == 2 and m.group(1) == "[query]":
             query = m.group(2)
             print(f"Searching on Google: {query}")
-            results = kernel.web.search(query)
-            context["Last Results"] = results
+            search_results = kernel.web.search(query)
+            results["Search Results"] = search_results
         elif action_type == "[web-browse]":
           method = None
           url = None
@@ -111,25 +115,25 @@ if __name__ == "__main__":
                     "value": inp.get("value")
                   } for inp in form.find_all("input") if inp["type"] != "hidden"]
               } for form in soup.find_all("form")]
-            context["Last Results"] = [text, forms]
+            results["Web Result"] = [text, forms]
           elif method == "POST":
             print(f"POST {url} with params: {params}")
-            result = kernel.web.post(url, data=params)
-            if type(result) is BeautifulSoup:
-              result = re.sub(r"[ \r\t\n]+", " ", result.body.text)
+            post_result = kernel.web.post(url, data=params)
+            if type(post_result) is BeautifulSoup:
+              post_result = re.sub(r"[ \r\t\n]+", " ", post_result.body.text)
             
-            context["Last Results"] = result
+            results["Web Results"] = post_result
         elif action_type == "[ask-for-info]":
           m = re.search(r"(?s)(?:\w\s)*:?\s*(\[.*?\])\s*(.*)", parts[1])
           if m.group(1) == "[prompt]":
             prompt = m.group(2)
             print(f"{prompt}")
-            context["Last Results"] = input("> ")
+            context["Action Result"] = input("> ")
         elif action_type == "[final-answer]":
           print(parts)
           exit(0)
             
-      context["Past Action"] = action
+      context["Past Actions and Results"].append(results)
       print("----")
   except EOFError:
     exit(0)
