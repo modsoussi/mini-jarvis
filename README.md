@@ -1,6 +1,6 @@
-# AI Agent
+# Jarvis
 
-This repo contains a collection of Python modules and scripts for building a conversational agent that can generate actions to address user needs and perform web-based actions including web browsing, information retrieval, and searching.
+This is a conversational agent that can generate actions to address user needs and perform web-based actions including web browsing, information retrieval, and searching.
 
 The following libraries are required to run this app:
 
