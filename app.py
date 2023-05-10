@@ -2,6 +2,7 @@ import kernel
 import os
 import re
 from bs4 import BeautifulSoup
+import json
 
 from dotenv import load_dotenv
 
@@ -14,18 +15,19 @@ if __name__ == "__main__":
       # model="text-davinci-003",
       model="gpt-3.5-turbo",
       system_prompt="""You are a helpful AI agent called MARKI. Given an input from the user, your job is to 
-      generate an action to perform next to address the user's need, taking into account any previous action and results. 
+      generate an action to perform next to address the user's need, taking into account any previous action and results.
+      When the Context is None, simply ignore it. 
       Actions must accomplish a singular goal. You must be as specific as you possibly can.
       For every action you generate, prefix with it with one of the following action types:
-      [google-search]
-      [web-browse]
-      [ask-for-info]
-      [final-answer]
-      [other]
+      [google-search]: when a google search is required to proceed
+      [web-browse]: when browsing is needed to proceed
+      [ask-for-info]: when you need to ask the user for more information
+      [final-answer]: when you have an aswer to the user's input from the context.
+      [other]: when the action is none of the above
 
-      If the action type is [google-search], output a [query].
-      If the action type is [web-browse], output a [url] and [method], where method is an http method.
-      If the action type is [ask-for-info], include a [prompt] param.
+      Only when the action type is [google-search], output a [query].
+      Only when the action type is [web-browse], output a [url], [method], and [params], where method is an http method, and [params] are JSON.
+      Only when the action type is [ask-for-info], output a [prompt] param.
       
       Examples:
       
@@ -34,10 +36,14 @@ if __name__ == "__main__":
       [google-search]
       [query] weather in miami beach
       
+      ---
+      
       User: What's the largest social app?
       
       [google-search]
       [query] largest social app
+      
+      ---
       """
     )
   )
@@ -46,11 +52,13 @@ if __name__ == "__main__":
     # user_input = "What's the status of my uscis case?"
     user_input = input(">> ")
 
-    context = dict()
+    context = {"Last Results": None }
     
-    for i in range(0, 6):
+    while True:
+      print(f"***\nContext:\n{context}\n***")
+      
       action = action_agent.get_completion(user_input, context)
-      print(action)
+      # print(action)
       parts = action.strip("\n").split("\n")
       
       m = re.search(r"(?s)(?:\w\s)*:?\s*(\[.*?\])\s*(.*)", parts[0])
@@ -69,6 +77,7 @@ if __name__ == "__main__":
         elif action_type == "[web-browse]":
           method = None
           url = None
+          params = None
           for line in parts[1:]:
             m = re.search(r"(?s)(?:\w\s)*:?\s*(\[.*?\])\s*(.*)", line)
             if not m is None:
@@ -77,8 +86,12 @@ if __name__ == "__main__":
                 url = val
               elif param == "[method]":
                 method = val
-              elif param == "[inputs]":
-                print(val)
+              elif param == "[params]":
+                m = re.search(r"(\{.*\})", val)
+                if not m is None:
+                  val = m.group(1)
+                  if val != "None":
+                    params = json.loads(val)
           
           if url is None or method is None:
             raise Exception("missing url or method")
@@ -86,8 +99,8 @@ if __name__ == "__main__":
           response = None
           if method == "GET":
             print(f"Clicked on {url}")
-            soup = kernel.web.get(url)
-            text = soup.body.text
+            soup = kernel.web.get(url, params=params)
+            text = re.sub(r"[ \n\r\t]+", " ", soup.body.text)
             forms = [
               {
                 "action": form.get("action"), 
@@ -100,9 +113,10 @@ if __name__ == "__main__":
               } for form in soup.find_all("form")]
             context["Last Results"] = [text, forms]
           elif method == "POST":
-            result = kernel.web.post(url, data=None)
+            print(f"POST {url} with params: {params}")
+            result = kernel.web.post(url, data=params)
             if type(result) is BeautifulSoup:
-              result = result.body.text
+              result = re.sub(r"[ \r\t\n]+", " ", result.body.text)
             
             context["Last Results"] = result
         elif action_type == "[ask-for-info]":
@@ -112,7 +126,7 @@ if __name__ == "__main__":
             print(f"{prompt}")
             context["Last Results"] = input("> ")
         elif action_type == "[final-answer]":
-          print(parts[1:])
+          print(parts)
           exit(0)
             
       context["Past Action"] = action

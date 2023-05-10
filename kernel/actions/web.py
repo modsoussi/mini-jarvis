@@ -10,11 +10,11 @@ def search(query: str) -> List[Any]:
   soup = get(f"https://www.google.com/search?q={urllib.parse.urlencode(dict(q=query))}")
   return [(link.string, link["href"]) for link in soup.body.find_all("a") if link["href"].startswith("/url?")]
 
-def get(url: str) -> bs4.BeautifulSoup:
+def get(url: str, params: Dict = None) -> bs4.BeautifulSoup:
   if url.startswith('/url?'):
     url = f"https://www.google.com{url}"
   
-  response = requests.get(url)
+  response = requests.get(url, params=params)
   return bs(response.text)
 
 def post(url: str, data: Dict = None):
