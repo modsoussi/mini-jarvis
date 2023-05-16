@@ -8,53 +8,54 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+system_prompt = """1. You are a helpful AI agent called MARKI. When the context has enough data to address the user's need,
+output your final answer prefixed with [final-answer], otherwise generate an action to perform 
+to get you closer to addressing the user's need.
+2. Do not repeat the same action twice.
+3. When the Context is empty or None, simply ignore it. 
+4. Do not repeat actions that have already been done.
+5. Actions must accomplish a singular goal. You must be as specific as you possibly can, and do not combine actions.
+6. If you don't need to browse the web or perform a google search to address the user's need, then directly output the final answer.
+7. For every action you generate, start with one of the following action types:
+  * [google-search]: when you need to perform a google search
+  * [web-browse]: when you need to browse the web
+  * [ask-for-info]: when there's missing data needed from the user to complete their request
+  * [final-answer]: when you have an aswer to the user's input from the context.
+  * [other]: when the action is none of the above
+
+  - Only when the action type is [google-search], output a [query].
+  - Only when the action type is [web-browse], output a [url], [method], and [params], where method is an http method, and [params] are double-quoted JSON.
+  - Only when the action type is [ask-for-info], you must output a [prompt] param.
+  - Only when the action type is [final-answer], output the source of your final answer.
+8. When giving your final answer, cite your source either from context or from what you know.
+
+Examples:
+
+User: What's the weather in miami beach today?
+
+[google-search]
+[query] weather in miami beach
+
+---
+
+User: What's the largest social app?
+
+[google-search]
+[query] largest social app
+
+---
+"""
+
 if __name__ == "__main__":
   action_agent = kernel.CompletionAgent(
     config=kernel.Config(
       openai_key=os.getenv("OPENAI_API_KEY"),
-      # model="text-davinci-003",
       model="gpt-3.5-turbo",
-      system_prompt="""1. You are a helpful AI agent called MARKI. When the context has enough data to address the user's need,
-output your final answer prefixed with [final-answer], otherwise generate an action to perform 
-to get you closer to addressing the user's need.
-      2. Do not repeat the same action twice.
-      3. When the Context is empty or None, simply ignore it. 
-      4. Do not repeat actions that have already been done.
-      5. Actions must accomplish a singular goal. You must be as specific as you possibly can, and do not combine actions.
-      6. If you don't need to browse the web or perform a google search to address the user's need, then directly output the final answer.
-      7. For every action you generate, start with one of the following action types:
-        * [google-search]: when you need to perform a google search
-        * [web-browse]: when you need to browse the web
-        * [ask-for-info]: when there's missing data needed from the user to complete their request
-        * [final-answer]: when you have an aswer to the user's input from the context.
-        * [other]: when the action is none of the above
-
-        - Only when the action type is [google-search], output a [query].
-        - Only when the action type is [web-browse], output a [url], [method], and [params], where method is an http method, and [params] are double-quoted JSON.
-        - Only when the action type is [ask-for-info], you must output a [prompt] param.
-        - Only when the action type is [final-answer], output the source of your final answer.
-      
-      Examples:
-      
-      User: What's the weather in miami beach today?
-
-      [google-search]
-      [query] weather in miami beach
-      
-      ---
-      
-      User: What's the largest social app?
-      
-      [google-search]
-      [query] largest social app
-      
-      ---
-      """
+      system_prompt=system_prompt
     )
   )
 
   try:
-    # user_input = "What's the status of my uscis case?"
     user_input = input(">> ")
 
     context = {"Past Actions and Results": [] }
@@ -113,9 +114,9 @@ to get you closer to addressing the user's need.
               text = re.sub(r"[ \r\n\xa0]+", " ", soup.body.text)
               forms = [
                 {
-                  "action": form.get("action"), 
-                  "method": form.get("method"),
-                  "params": [
+                  "form_action": form.get("action"), 
+                  "form_method": form.get("method"),
+                  "form_params": [
                     {
                       inp.get("name"): inp.get("value")
                     } for inp in form.find_all("input") if inp["type"] != "hidden" and not inp.get("name") is None]
@@ -137,7 +138,6 @@ to get you closer to addressing the user's need.
             print(f"{prompt}")
             results[f"Action #{action_ord} Results"] = input("> ")
         elif action_type == "[final-answer]":
-          # print(action)
           exit(0)
             
       context["Past Actions and Results"] = [results] + context["Past Actions and Results"]
