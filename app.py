@@ -14,22 +14,23 @@ if __name__ == "__main__":
       openai_key=os.getenv("OPENAI_API_KEY"),
       # model="text-davinci-003",
       model="gpt-3.5-turbo",
-      system_prompt="""You are a helpful AI agent called MARKI. Given an input from the user, your job is to 
-      generate an action to perform next to address the user's need, taking into account any previous actions and results.
+      system_prompt="""You are a helpful AI agent called MARKI. When the context has enough data to address the user's need,
+output your final answer, otherwise generate an action to perform to get you closer to addressing the user's need.
+      Do not repeat the same action twice.
       When the Context is empty or None, simply ignore it. 
       Do not repeat actions that have already been done.
       Actions must accomplish a singular goal. You must be as specific as you possibly can, and do not combine actions.
       If you don't need to browse the web or perform a google search to address the user's need, then directly output the final answer.
       For every action you generate, prefix with it with one of the following action types:
-      [google-search]: when you need to perform a google search
-      [web-browse]: when you need to browse the web
-      [ask-for-info]: when key data is missing and you need to ask the user for it to proceed
-      [final-answer]: when you have an aswer to the user's input from the context.
-      [other]: when the action is none of the above
+      * [google-search]: when you need to perform a google search
+      * [web-browse]: when you need to browse the web
+      * [ask-for-info]: when there's missing data needed from the user to complete their request
+      * [final-answer]: when you have an aswer to the user's input from the context.
+      * [other]: when the action is none of the above
 
       - Only when the action type is [google-search], output a [query].
       - Only when the action type is [web-browse], output a [url], [method], and [params], where method is an http method, and [params] are double-quoted JSON.
-      - Only when the action type is [ask-for-info], output a [prompt] param.
+      - Only when the action type is [ask-for-info], you must output a [prompt] param.
       - Only when the action type is [final-answer], output the source of your final answer.
       
       Examples:
@@ -56,6 +57,7 @@ if __name__ == "__main__":
     user_input = input(">> ")
 
     context = {"Past Actions and Results": [] }
+    # context = { "Last Result": None }
     
     action_ord = 0
     while True:
@@ -81,6 +83,7 @@ if __name__ == "__main__":
             print(f"Searching on Google: {query}")
             search_results = kernel.web.search(query)
             results[f"Action #{action_ord} Results"] = search_results
+            # results = search_results
         elif action_type == "[web-browse]":
           method = None
           url = None
@@ -107,17 +110,21 @@ if __name__ == "__main__":
           if method == "GET":
             print(f"Clicked on {url} with {params}")
             soup = kernel.web.get(url, params=params)
-            text = re.sub(r"[ \n\r\t]+", " ", soup.body.text)
-            forms = [
-              {
-                "action": form.get("action"), 
-                "method": form.get("method"),
-                "params": [
-                  {
-                    inp.get("name"): inp.get("value")
-                  } for inp in form.find_all("input") if inp["type"] != "hidden" and not inp.get("name") is None]
-              } for form in soup.find_all("form")]
-            results[f"Action #{action_ord} Results"] = [text, forms]
+            if not soup.body is None:
+              text = re.sub(r"[ \r\n\xa0]+", " ", soup.body.text)
+              forms = [
+                {
+                  "action": form.get("action"), 
+                  "method": form.get("method"),
+                  "params": [
+                    {
+                      inp.get("name"): inp.get("value")
+                    } for inp in form.find_all("input") if inp["type"] != "hidden" and not inp.get("name") is None]
+                } for form in soup.find_all("form")]
+              results[f"Action #{action_ord} Results"] = [text, forms]
+              # results = [text, forms]
+            else:
+              print(soup.body)
           elif method == "POST":
             print(f"POST {url} with params: {params}")
             post_result = kernel.web.post(url, data=params)
@@ -125,17 +132,22 @@ if __name__ == "__main__":
               post_result = re.sub(r"[ \r\t\n]+", " ", post_result.body.text)
             
             results[f"Action #{action_ord} Results"] = post_result
+            # results = post_result
         elif action_type == "[ask-for-info]":
           m = re.search(r"(?s)(?:\w\s)*:?\s*(\[.*?\])\s*(.*)", parts[1])
           if m.group(1) == "[prompt]":
             prompt = m.group(2)
             print(f"{prompt}")
             results[f"Action #{action_ord} Results"] = input("> ")
+            # results = input("> ") 
         elif action_type == "[final-answer]":
           # print(action)
           exit(0)
             
-      context["Past Actions and Results"].append(results)
+      context["Past Actions and Results"] = [results] + context["Past Actions and Results"]
+      # context["Last Result"] = results
       print("----")
   except EOFError:
+    exit(0)
+  except KeyboardInterrupt:
     exit(0)

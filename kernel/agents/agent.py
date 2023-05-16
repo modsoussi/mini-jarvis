@@ -31,9 +31,9 @@ class CompletionAgent(Agent):
     if not context is None:
       prompt = """{}
       
-      Context:
-      {}
-      """.format(prompt, '\n - '.join([""]+[f"{k}:{v}" for k,v in context.items()]))
+Context:
+{}
+""".format(prompt, '\n - '.join([""]+[f"{k}:{v}" for k,v in context.items()]))
     
     # print(prompt)
     
