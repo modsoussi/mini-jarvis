@@ -1,26 +1,46 @@
-# Jarvis
+# Mini-Jarvis
 
-This is a conversational agent that can generate actions to address user needs and perform web-based actions including web browsing, information retrieval, and searching.
+Mini-Jarvis is a Python-based AI assistant that can answer questions and perform actions, using the OpenAI API and several Python packages including `requests`, `bs4`, and `dotenv`.
 
-The following libraries are required to run this app:
+## Installation
 
-- openai
-- tiktoken
-- requests
-- bs4 (Beautiful Soup)
-- python-dotenv
+In order to use Mini-Jarvis, you will need to set up a virtual environment and install the required Python packages. Here are the steps to do this:
 
-Here is an overview of each module in the codebase:
+1. Clone this repository to your local machine.
 
-- `app.py`: The main script that runs the conversational agent. It imports `kernel`, `os`, `re`, `BeautifulSoup`, and `load_dotenv` from the `dotenv` module. It creates an instance of the `CompletionAgent` class defined in `kernel/agents/agent.py` and listens for user input. Based on the generated actions, it performs various web actions including web browsing and information retrieval.
-- `kernel/__init__.py`: Initializes the package and imports symbols from other modules.
-- `kernel/agents/config.py`: Defines the `Config` class for holding configuration settings for an agent, such as the OpenAI API key, system prompt, and model parameters.
-- `kernel/agents/agent.py`: Contains the base `Agent` class and two subclasses: `CompletionAgent` and `ChatAgent`. These classes define how the agent communicates with OpenAI's GPT models and handles context. They also use external libraries such as `tiktoken` for tokenizing the input text.
-- `kernel/actions/web.py`: Contains functions for performing web actions (e.g. web browsing and searching).
-- `kernel/__init__.py`: For exporting the functions in `kernel/actions/web.py`.
+2. Navigate to the root directory of the repository in your terminal and run the following command to create a virtual environment:
+```
+python3 -m venv venv
+```
+3. Activate the virtual environment by running:
+```
+source venv/bin/activate
+```
+4. Install the required packages by running:
+```
+pip install -r requirements.txt
+```
+5. Set up your OpenAI API key by creating a `.env` file in the root directory of the repository, and adding the following line (with your actual API key):
+```
+OPENAI_API_KEY=<your API key here>
+```
 
-To run the app, ensure that you have installed all the required libraries and set the `OPENAI_API_KEY` environment variable to your API key. Then run the `app.py` script.
+## Usage
 
-Enjoy using the AI assistant!
+Once you have installed Mini-Jarvis, you can use it to ask questions and perform actions. Here's how to do this:
+
+1. Go to the root directory of the repository in your terminal.
+2. Activate the virtual environment by running:
+```
+source venv/bin/activate
+```
+3. Run the `app.py` file by running:
+```
+python app.py
+```
+4. You should see a prompt that says `>> `. Enter a question or request.
+5. Mini-Jarvis will process your input and generate an action to perform. You may see a `[google-search]` instruction, for example. Follow the instructions to provide the information Mini-Jarvis needs to complete the action.
+6. Mini-Jarvis will return the results of the action, and may generate additional instructions or prompts for more information.
+7. Continue interacting with Mini-Jarvis until you have received the answer or action you were looking for.
 
 ##### Generated using DocaAI
