@@ -19,6 +19,7 @@ if __name__ == "__main__":
       When the Context is empty or None, simply ignore it. 
       Do not repeat actions that have already been done.
       Actions must accomplish a singular goal. You must be as specific as you possibly can, and do not combine actions.
+      If you don't need to browse the web or perform a google search to address the user's need, then directly output the final answer.
       For every action you generate, prefix with it with one of the following action types:
       [google-search]: when you need to perform a google search
       [web-browse]: when you need to browse the web
@@ -26,9 +27,10 @@ if __name__ == "__main__":
       [final-answer]: when you have an aswer to the user's input from the context.
       [other]: when the action is none of the above
 
-      Only when the action type is [google-search], output a [query].
-      Only when the action type is [web-browse], output a [url], [method], and [params], where method is an http method, and [params] are JSON.
-      Only when the action type is [ask-for-info], output a [prompt] param.
+      - Only when the action type is [google-search], output a [query].
+      - Only when the action type is [web-browse], output a [url], [method], and [params], where method is an http method, and [params] are double-quoted JSON.
+      - Only when the action type is [ask-for-info], output a [prompt] param.
+      - Only when the action type is [final-answer], output the source of your final answer.
       
       Examples:
       
@@ -103,18 +105,17 @@ if __name__ == "__main__":
           
           response = None
           if method == "GET":
-            print(f"Clicked on {url}")
+            print(f"Clicked on {url} with {params}")
             soup = kernel.web.get(url, params=params)
             text = re.sub(r"[ \n\r\t]+", " ", soup.body.text)
             forms = [
               {
                 "action": form.get("action"), 
                 "method": form.get("method"),
-                "inputs": [
+                "params": [
                   {
-                    "name": inp.get("name"),
-                    "value": inp.get("value")
-                  } for inp in form.find_all("input") if inp["type"] != "hidden"]
+                    inp.get("name"): inp.get("value")
+                  } for inp in form.find_all("input") if inp["type"] != "hidden" and not inp.get("name") is None]
               } for form in soup.find_all("form")]
             results[f"Action #{action_ord} Results"] = [text, forms]
           elif method == "POST":
@@ -131,7 +132,7 @@ if __name__ == "__main__":
             print(f"{prompt}")
             results[f"Action #{action_ord} Results"] = input("> ")
         elif action_type == "[final-answer]":
-          print(parts)
+          # print(action)
           exit(0)
             
       context["Past Actions and Results"].append(results)
