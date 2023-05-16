@@ -58,7 +58,6 @@ to get you closer to addressing the user's need.
     user_input = input(">> ")
 
     context = {"Past Actions and Results": [] }
-    # context = { "Last Result": None }
     
     action_ord = 0
     while True:
@@ -84,7 +83,6 @@ to get you closer to addressing the user's need.
             print(f"Searching on Google: {query}")
             search_results = kernel.web.search(query)
             results[f"Action #{action_ord} Results"] = search_results
-            # results = search_results
         elif action_type == "[web-browse]":
           method = None
           url = None
@@ -123,7 +121,6 @@ to get you closer to addressing the user's need.
                     } for inp in form.find_all("input") if inp["type"] != "hidden" and not inp.get("name") is None]
                 } for form in soup.find_all("form")]
               results[f"Action #{action_ord} Results"] = [text, forms]
-              # results = [text, forms]
             else:
               print(soup.body)
           elif method == "POST":
@@ -133,20 +130,17 @@ to get you closer to addressing the user's need.
               post_result = re.sub(r"[ \r\t\n]+", " ", post_result.body.text)
             
             results[f"Action #{action_ord} Results"] = post_result
-            # results = post_result
         elif action_type == "[ask-for-info]":
           m = re.search(r"(?s)(?:\w\s)*:?\s*(\[.*?\])\s*(.*)", parts[1])
           if m.group(1) == "[prompt]":
             prompt = m.group(2)
             print(f"{prompt}")
             results[f"Action #{action_ord} Results"] = input("> ")
-            # results = input("> ") 
         elif action_type == "[final-answer]":
           # print(action)
           exit(0)
             
       context["Past Actions and Results"] = [results] + context["Past Actions and Results"]
-      # context["Last Result"] = results
       print("----")
   except EOFError:
     exit(0)
