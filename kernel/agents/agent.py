@@ -35,7 +35,7 @@ Context:
 {}
 """.format(prompt, '\n - '.join([""]+[f"{k}:{v}" for k,v in context.items()]))
     
-    print(prompt)
+    # print(prompt)
     
     self.check_prompt_length(prompt)
     
