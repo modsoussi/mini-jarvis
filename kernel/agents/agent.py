@@ -19,7 +19,7 @@ class CompletionAgent(Agent):
     super().__init__(config)
     self.tokenizer = tiktoken.encoding_for_model(self.config.model)
   
-  def check_prompt_length(self, prompt):
+  def validate_prompt_length(self, prompt):
     total_tokens = len(self.tokenizer.encode(prompt))
     if total_tokens > (4097 - 1024):
       print(prompt)
@@ -37,7 +37,7 @@ Context:
     
     # print(prompt)
     
-    self.check_prompt_length(prompt)
+    self.validate_prompt_length(prompt)
     
     if self.config.model.startswith('text-'):
       response = openai.Completion.create(
