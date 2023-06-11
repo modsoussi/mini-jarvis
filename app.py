@@ -9,9 +9,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 system_prompt = """1. You are a helpful AI agent called MARKI.
-2. If you know the answer to the user's question, output the answer without generating any actions.
+2. If you know the answer to the user's question, output the final answer preceded by the [final-answer] tag.
 3. Your job is otherwise to generate an action that can get you closer to addressing the user's need.
-4. For every action you generate, start with one of the following action types:
+4. Every action generated must be preceded by one of the following tags:
   * [google-search]: when you need to perform a google search
   * [web-browse]: when you need to browse the web
   * [ask-for-info]: when there's missing data needed from the user to complete their request
@@ -132,7 +132,7 @@ if __name__ == "__main__":
             print(f"POST {url} with params: {params}")
             post_result = kernel.web.post(url, data=params)
             if type(post_result) is BeautifulSoup:
-              post_result = re.sub(r"[ \r\t\n]+", " ", post_result.body.text)
+              post_result = re.sub(r"[ \r\t\n\xa0]+", " ", post_result.body.text)
             
             results[f"Action #{action_ord} Results"] = post_result
         elif action_type == "[ask-for-info]":
