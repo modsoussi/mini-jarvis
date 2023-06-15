@@ -8,58 +8,25 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-system_prompt = """1. You are a helpful AI agent called MARKI.
-2. If you know the answer to the user's question, output the final answer preceded by the [final-answer] tag.
-3. Your job is otherwise to generate an action that can get you closer to addressing the user's need.
-4. Every action generated must be preceded by one of the following tags:
-  * [google-search]: when you need to perform a google search
-  * [web-browse]: when you need to browse the web
-  * [ask-for-info]: when there's missing data needed from the user to complete their request
-  * [final-answer]: when you have an aswer to the user's input from the context.
-  * [other]: when the action is none of the above
-
-  - Only when the action type is [google-search], output a [query].
-  - Only when the action type is [web-browse], output a [url], [method], and [params], where method is an http method, and [params] are double-quoted JSON.
-  - Only when the action type is [ask-for-info], you must output a [prompt] param.
-  - Only when the action type is [final-answer], output the source of your final answer.
-5. Do not repeat actions, and only generate one action to do.
-6. When the Context is empty or None, simply ignore it. 
-7. Do not repeat actions.
-8. Actions must accomplish a singular goal. You must be as specific as you possibly can, and do not combine actions.
-9. When giving your final answer, cite your source and be specific.
-
-Examples:
-
-User: What's the weather in miami beach today?
-
-[google-search]
-[query] weather in miami beach
-
----
-
-User: What's the largest social app?
-
-[google-search]
-[query] largest social app
-
----
-
-Example of params output:
-
-[params] {"param_name": "param_value"}
-"""
-
 if __name__ == "__main__":
+  
+  # read system prompt from prompts folder
+  system_prompt = ""
+  with open("prompts/sys.txt") as f:
+    system_prompt = f.read()
+  
   action_agent = kernel.CompletionAgent(
     config=kernel.Config(
       openai_key=os.getenv("OPENAI_API_KEY"),
-      model="gpt-3.5-turbo",
+      model="gpt-3.5-turbo-0613",
       system_prompt=system_prompt
     )
   )
 
   try:
     user_input = input(">> ")
+    if user_input == ":q":
+      exit(0)
 
     context = {"Past Actions and Results": [] }
     
@@ -125,7 +92,7 @@ if __name__ == "__main__":
                     } for inp in form.find_all("input") if inp["type"] != "hidden" and not inp.get("name") is None]
                 } for form in soup.find_all("form")]
               links = [(a.text, a.get("href")) for a in soup.body.find_all("a") if not a.get("href") is None and a.get("href") != "javascript:void(0)"]
-              results[f"Action #{action_ord} Results"] = [text, forms, links]
+              results[f"Action #{action_ord} Results"] = [text, forms]
             else:
               print(soup.body)
           elif method == "POST":
