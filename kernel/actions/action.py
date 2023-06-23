@@ -24,6 +24,8 @@ class Action:
         self.params = self.raw["params"]
     elif self.action_type == ACTION_TYPE_FINAL:
       self.answer = self.raw["answer"]
+    elif self.action_type == ACTION_TYPE_SEARCH:
+      self.query = self.raw["query"]
       
   def exec(self):
     if self.action_type == ACTION_TYPE_ASK_FOR_INFO:
@@ -55,6 +57,8 @@ class Action:
           }
     elif self.action_type == ACTION_TYPE_FINAL:
       return self.answer
+    elif self.action_type == ACTION_TYPE_SEARCH:
+      return web.search(self.query)
       
   def desc(self) -> str:
     if self.action_type == ACTION_TYPE_ASK_FOR_INFO:
@@ -64,6 +68,8 @@ class Action:
         return f"Clicked on {self.url}"
       elif self.method == "POST":
         return f"POST {self.url}"
+    elif self.action_type == ACTION_TYPE_SEARCH:
+      return f"Google Search for \"{self.query}\""
       
   def __str__(self) -> str:
     return self.raw

@@ -27,6 +27,7 @@ if __name__ == "__main__":
     context = []
     while True:
       action = kernel.Action(action_agent.get_completion(user_input, context))
+      print(action.desc())
       result = action.exec()
       
       if action.action_type == kernel.ACTION_TYPE_FINAL:

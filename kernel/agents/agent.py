@@ -33,7 +33,7 @@ class CompletionAgent(Agent):
    
 Context:
 {}
-""".format(prompt, "\n".join([f"-{a[0]}: {a[1]}" for a in context if len(a) > 0]))
+""".format(prompt, "\n".join([f"* {a[0]}: {a[1]}" for a in context if len(a) > 0]))
     
     # print(prompt)
     
