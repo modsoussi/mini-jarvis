@@ -25,15 +25,15 @@ class CompletionAgent(Agent):
       print(prompt)
       raise Exception("Too many tokens")
   
-  def get_completion(self, user_prompt: str, context: Dict = None) -> str:
+  def get_completion(self, user_prompt: str, context: list[tuple([])] = None) -> str:
     prompt = user_prompt
     
     if not context is None:
       prompt = """{}
-      
+   
 Context:
 {}
-""".format(prompt, '\n - '.join([""]+[f"{k}:{v}" for k,v in context.items()]))
+""".format(prompt, "\n".join([f"-{a[0]}: {a[1]}" for a in context if len(a) > 0]))
     
     # print(prompt)
     
