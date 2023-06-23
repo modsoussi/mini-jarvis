@@ -1,8 +1,5 @@
 import kernel
 import os
-import re
-from bs4 import BeautifulSoup
-import json
 
 from dotenv import load_dotenv
 
@@ -27,13 +24,8 @@ if __name__ == "__main__":
     if user_input == ":q":
       exit(0)
 
-    context = [()]
-    
-    action_ord = 0
+    context = []
     while True:
-      results = {}
-      # print(f"***\nContext:\n{context}\n***")
-      
       action = kernel.Action(action_agent.get_completion(user_input, context))
       result = action.exec()
       
@@ -42,7 +34,6 @@ if __name__ == "__main__":
         exit(0)
       
       context.append((action.desc(), result))
-      # print("----")
   except EOFError:
     exit(0)
   except KeyboardInterrupt:

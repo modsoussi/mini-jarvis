@@ -9,4 +9,8 @@ __all__ = [
   'Config',
   'Action',
   'web',
+  'ACTION_TYPE_ASK_FOR_INFO',
+  'ACTION_TYPE_FINAL',
+  'ACTION_TYPE_SEARCH',
+  'ACTION_TYPE_WEB_BROWSE'
 ]
