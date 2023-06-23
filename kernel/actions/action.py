@@ -51,14 +51,14 @@ class Action:
             } for form in soup.find_all("form")]
           links = [(re.sub(r"[ \r\n\xa0\t]+", "", a.text), a.get("href")) for a in soup.body.find_all("a") if not a.get("href") is None and a.get("href") != "javascript:void(0)"]
           return {
-            "text": text,
+            "website text content": text,
             "forms": forms,
             # "links": links
           }
-    elif self.action_type == ACTION_TYPE_FINAL:
-      return self.answer
     elif self.action_type == ACTION_TYPE_SEARCH:
       return web.search(self.query)
+    elif self.action_type == ACTION_TYPE_FINAL:
+      return self.answer
       
   def desc(self) -> str:
     if self.action_type == ACTION_TYPE_ASK_FOR_INFO:
@@ -67,9 +67,11 @@ class Action:
       if self.method == "GET":
         return f"Clicked on {self.url}"
       elif self.method == "POST":
-        return f"POST {self.url}"
+        return f"Submitting form on {self.url}"
     elif self.action_type == ACTION_TYPE_SEARCH:
       return f"Google Search for \"{self.query}\""
+    elif self.action_type == ACTION_TYPE_FINAL:
+      return "We have an answer"
       
   def __str__(self) -> str:
     return self.raw
