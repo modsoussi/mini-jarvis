@@ -7,35 +7,40 @@ load_dotenv()
 
 if __name__ == "__main__":
   # read system prompt from prompts folder
-  system_prompt = ""
-  with open("prompts/sys.txt") as f:
-    system_prompt = f.read()
+  # system_prompt = ""
+  # with open("prompts/sys.txt") as f:
+  #   system_prompt = f.read()
   
-  action_agent = kernel.CompletionAgent(
-    config=kernel.Config(
-      openai_key=os.getenv("OPENAI_API_KEY"),
-      model="gpt-3.5-turbo-0613",
-      system_prompt=system_prompt
-    )
-  )
+  # action_agent = kernel.CompletionAgent(
+  #   config=kernel.Config(
+  #     openai_key=os.getenv("OPENAI_API_KEY"),
+  #     model="gpt-3.5-turbo-0613",
+  #     system_prompt=system_prompt
+  #   )
+  # )
 
-  try:
-    user_input = input(">> ")
-    if user_input == ":q":
-      exit(0)
+  # try:
+  #   user_input = input(">> ")
+  #   if user_input == ":q":
+  #     exit(0)
 
-    context = []
-    while True:
-      action = kernel.Action(action_agent.get_completion(user_input, context))
-      print(action.desc())
-      result = action.exec()
+  #   context = []
+  #   while True:
+  #     action = kernel.Action(action_agent.get_completion(user_input, context))
+  #     print(action.desc())
+  #     result = action.exec()
       
-      if action.action_type == kernel.ACTION_TYPE_FINAL:
-        print(result)
-        exit(0)
+  #     if action.action_type == kernel.ACTION_TYPE_FINAL:
+  #       print(result)
+  #       exit(0)
       
-      context.append((action.desc(), result))
-  except EOFError:
-    exit(0)
-  except KeyboardInterrupt:
-    exit(0)
+  #     context.append((action.desc(), result))
+  
+  
+  # except EOFError:
+  #   exit(0)
+  # except KeyboardInterrupt:
+  #   exit(0)
+  
+  browser = kernel.Browser()
+  print(browser.get("https://egov.uscis.gov/casestatus/landing.do"))
