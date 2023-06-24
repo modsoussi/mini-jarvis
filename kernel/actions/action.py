@@ -51,7 +51,7 @@ class Action:
     elif self.action_type == ACTION_TYPE_SEARCH:
       return f"Google Search for \"{self.query}\""
     elif self.action_type == ACTION_TYPE_FINAL:
-      return "We have an answer"
+      return "Final Answer:"
       
   def __str__(self) -> str:
     return self.raw
