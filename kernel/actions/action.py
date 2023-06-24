@@ -1,4 +1,5 @@
 from kernel.browser import Browser
+import urllib
 import json
 
 ACTION_TYPE_ASK_FOR_INFO = "[ask-for-info]"
@@ -45,13 +46,16 @@ class Action:
       return self.prompt
     elif self.action_type == ACTION_TYPE_WEB_BROWSE:
       if self.method == "GET":
-        return f"Clicked on {self.url}"
+        desc = f"Clicked on {self.url}"
+        if self.params is not None:
+          desc = desc + f"/?{urllib.parse.urlencode(self.params)}"
+        return desc
       elif self.method == "POST":
         return f"Submitting form on {self.url}"
     elif self.action_type == ACTION_TYPE_SEARCH:
       return f"Google Search for \"{self.query}\""
     elif self.action_type == ACTION_TYPE_FINAL:
-      return "We have an answer"
+      return "Final Answer:"
       
   def __str__(self) -> str:
     return self.raw
