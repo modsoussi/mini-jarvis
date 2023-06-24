@@ -1,6 +1,5 @@
-from kernel.actions.web import search, get
+from .action import Action
 
 __all__ = [
-  "search",
-  "get"
+  'Action'
 ]

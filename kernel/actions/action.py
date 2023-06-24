@@ -1,6 +1,4 @@
-import kernel.actions.web as web
-from bs4 import BeautifulSoup
-import re
+from kernel.browser import Browser
 import json
 
 ACTION_TYPE_ASK_FOR_INFO = "[ask-for-info]"
@@ -24,35 +22,21 @@ class Action:
         self.params = self.raw["params"]
     elif self.action_type == ACTION_TYPE_FINAL:
       self.answer = self.raw["answer"]
+    elif self.action_type == ACTION_TYPE_SEARCH:
+      self.query = self.raw["query"]
       
   def exec(self):
     if self.action_type == ACTION_TYPE_ASK_FOR_INFO:
       return input(f"<< {self.prompt}\n>> ")
     elif self.action_type == ACTION_TYPE_WEB_BROWSE:
       if self.method == "POST":
-        result =  web.post(self.url, self.params)
-        if type(result) is BeautifulSoup:
-          return re.sub(r"[ \r\t\n\xa0]+", " ", result.body.text)
-        
+        result = Browser().post(self.url, self.params)
+        return result.strip("\n")
       elif self.method == "GET":
-        soup = web.get(self.url, self.params)
-        if not soup.body is None:
-          text = re.sub(r"[ \r\n\xa0\t]+", " ", soup.body.text)
-          forms = [
-            {
-              "form_action": form.get("action"), 
-              "form_method": form.get("method"),
-              "form_params": [
-                {
-                  inp.get("name"): inp.get("value")
-                } for inp in form.find_all("input") if inp["type"] != "hidden" and not inp.get("name") is None]
-            } for form in soup.find_all("form")]
-          links = [(re.sub(r"[ \r\n\xa0\t]+", "", a.text), a.get("href")) for a in soup.body.find_all("a") if not a.get("href") is None and a.get("href") != "javascript:void(0)"]
-          return {
-            "text": text,
-            "forms": forms,
-            # "links": links
-          }
+        soup = Browser().get(self.url, self.params)
+        return soup.strip("\n ")
+    elif self.action_type == ACTION_TYPE_SEARCH:
+      return Browser().google_search(self.query)
     elif self.action_type == ACTION_TYPE_FINAL:
       return self.answer
       
@@ -63,7 +47,11 @@ class Action:
       if self.method == "GET":
         return f"Clicked on {self.url}"
       elif self.method == "POST":
-        return f"POST {self.url}"
+        return f"Submitting form on {self.url}"
+    elif self.action_type == ACTION_TYPE_SEARCH:
+      return f"Google Search for \"{self.query}\""
+    elif self.action_type == ACTION_TYPE_FINAL:
+      return "We have an answer"
       
   def __str__(self) -> str:
     return self.raw

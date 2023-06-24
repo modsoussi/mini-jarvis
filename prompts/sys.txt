@@ -15,7 +15,7 @@
   - Only when the action type is [final-answer], include an "answer" key.
 6. Do not repeat actions, and only generate one action.
 7. When the Context is empty or None, simply ignore it. 
-8. Actions must accomplish a singular goal. You must be as specific as you possibly can, and do not combine actions.
+8. Actions must accomplish a singular goal. You must specific, and do not combine actions.
 9. When giving your final answer, cite your source and be specific.
 
 Examples:
