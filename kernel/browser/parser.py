@@ -40,13 +40,19 @@ class Parser(html.parser.HTMLParser):
           self.output = self.output + f" type={self.cur_attrs['type']}"
           
         self.output = self.output + "]"
+      elif tag in ["h1", "h2", "h3", "h4", "h5", "h6"]:
+        self.output = self.output + "\n"
     else:
       self.tags.pop()
     
       if tag == "form":
         self.output = self.output + "\n" + "[endform]" + "\n"
         self.pre_tabs -= 2
-      elif tag in ["tr", "div", "p"]:
+      elif tag in ["tr", "p"]:
+        self.output = self.output + "\n"
+      elif tag == "span":
+        self.output = self.output + " "
+      elif tag in ["h1", "h2", "h3", "h4", "h5", "h6"]:
         self.output = self.output + "\n"
   
   def handle_starttag(self, tag, attrs):
