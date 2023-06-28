@@ -10,6 +10,7 @@ class Parser(html.parser.HTMLParser):
     self.tags = []
     self.cur_attrs = {}
     self.pre_tabs = 0
+    self.current_href = None
     
   def handle_tag(self, tag: str, attrs: Dict[str, str], start: bool):
     if start:
@@ -42,6 +43,9 @@ class Parser(html.parser.HTMLParser):
         self.output = self.output + "]"
       elif tag in ["h1", "h2", "h3", "h4", "h5", "h6"]:
         self.output = self.output + "\n"
+      elif tag == "a":
+        if "href" in attrs.keys():
+          self.current_href = attrs["href"]
     else:
       self.tags.pop()
     
@@ -54,6 +58,8 @@ class Parser(html.parser.HTMLParser):
         self.output = self.output + " "
       elif tag in ["h1", "h2", "h3", "h4", "h5", "h6"]:
         self.output = self.output + "\n"
+      elif tag == "a":
+        self.current_href = None
   
   def handle_starttag(self, tag, attrs):
     self.handle_tag(tag, attrs=dict(attrs), start=True)
@@ -87,15 +93,15 @@ class Parser(html.parser.HTMLParser):
       return
     
     current_tag = self.tags[-1]
+    # print(current_tag, data, self.tags)
     
-    if current_tag in ["p", "div"]:
-      self.output = self.output + "\t"*self.pre_tabs + data
-    elif current_tag in ["a"]:
-      self.output = self.output + "\t"*self.pre_tabs + f" [{data}] "
-      if "href" in self.cur_attrs.keys():
-        self.output = self.output + f"({self.cur_attrs['href']})"
-    elif current_tag == "span":
-      self.output = self.output + data
+    if current_tag in ["h1", "h2", "h3", "h4", "h5", "h6", "span", "div", "p", "a"]:
+      if "a" in self.tags:
+        self.output = self.output + "\t"*self.pre_tabs + f" [{data}] ({self.current_href})"
+        # if "href" in self.cur_attrs.keys():
+        #   self.output = self.output + f"({self.cur_attrs['href']})"
+      else:
+        self.output = self.output + "\t"*self.pre_tabs + data
     elif current_tag not in ["script", "style"]:
       self.output = self.output + "\n" + "\t"*self.pre_tabs + data
     
