@@ -9,8 +9,11 @@ ACTION_TYPE_FINAL = "[final-answer]"
 
 class Action:
   def __init__(self, action):
-    self.raw = json.loads(action)
-    self.action_type = self.raw["action_type"]
+    try:
+      self.raw = json.loads(action)
+      self.action_type = self.raw["action_type"]
+    except json.JSONDecodeError:
+      print(f"json.JSONDecodeError: {self.raw}")
     
     if self.action_type == ACTION_TYPE_ASK_FOR_INFO:
       self.prompt = self.raw["prompt"]

@@ -93,13 +93,9 @@ class Parser(html.parser.HTMLParser):
       return
     
     current_tag = self.tags[-1]
-    # print(current_tag, data, self.tags)
-    
     if current_tag in ["h1", "h2", "h3", "h4", "h5", "h6", "span", "div", "p", "a"]:
       if "a" in self.tags:
         self.output = self.output + "\t"*self.pre_tabs + f" [{data}] ({self.current_href})"
-        # if "href" in self.cur_attrs.keys():
-        #   self.output = self.output + f"({self.cur_attrs['href']})"
       else:
         self.output = self.output + "\t"*self.pre_tabs + data
     elif current_tag not in ["script", "style"]:
