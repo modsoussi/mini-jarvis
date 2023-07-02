@@ -1,21 +1,17 @@
 import kernel
 import os
+import prompts.sys
 
 from dotenv import load_dotenv
 
 load_dotenv()
 
 if __name__ == "__main__":
-  # read system prompt from prompts folder
-  system_prompt = ""
-  with open("prompts/sys.txt") as f:
-    system_prompt = f.read()
-  
   action_agent = kernel.CompletionAgent(
     config=kernel.Config(
       openai_key=os.getenv("OPENAI_API_KEY"),
       model="gpt-3.5-turbo-16k",
-      system_prompt=system_prompt
+      system_prompt=prompts.sys.prompt
     )
   )
 
