@@ -43,6 +43,8 @@ class Action:
       return Browser().google_search(self.query)
     elif self.action_type == ACTION_TYPE_FINAL:
       return self.answer
+    else:
+      raise Exception(f"Action not recognized:\n{self.raw}")
       
   def desc(self) -> str:
     if self.action_type == ACTION_TYPE_ASK_FOR_INFO:

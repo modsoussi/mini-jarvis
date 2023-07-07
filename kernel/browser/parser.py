@@ -46,6 +46,17 @@ class Parser(html.parser.HTMLParser):
       elif tag == "a":
         if "href" in attrs.keys():
           self.current_href = attrs["href"]
+      elif tag == "button":
+        self.output = self.output + f"[button"
+        
+        if 'type' in self.cur_attrs.keys():
+          self.output = self.output + f" type={self.cur_attrs['type']}"
+          
+        if 'id' in self.cur_attrs.keys():
+          self.output = self.output + f" id={self.cur_attrs['id']}"
+        
+        self.output = self.output + "]"
+        self.pre_tabs += 2
     else:
       self.tags.pop()
     
@@ -60,6 +71,9 @@ class Parser(html.parser.HTMLParser):
         self.output = self.output + "\n"
       elif tag == "a":
         self.current_href = None
+      elif tag == "button":
+        self.output = self.output + "\n" + "[endbutton]" + "\n"
+        self.pre_tabs -= 2
   
   def handle_starttag(self, tag, attrs):
     self.handle_tag(tag, attrs=dict(attrs), start=True)
@@ -96,6 +110,8 @@ class Parser(html.parser.HTMLParser):
     if current_tag in ["h1", "h2", "h3", "h4", "h5", "h6", "span", "div", "p", "a"]:
       if "a" in self.tags:
         self.output = self.output + "\t"*self.pre_tabs + f" [{data}] ({self.current_href})"
+      elif "button" in self.tags:
+        self.output = self.output + "\t"*self.pre_tabs + data
       else:
         self.output = self.output + "\t"*self.pre_tabs + data
     elif current_tag not in ["script", "style"]:

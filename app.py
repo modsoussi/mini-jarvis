@@ -10,8 +10,8 @@ if __name__ == "__main__":
   action_agent = kernel.CompletionAgent(
     config=kernel.Config(
       openai_key=os.getenv("OPENAI_API_KEY"),
-      model="gpt-3.5-turbo-16k",
-      system_prompt=prompts.sys.prompt
+      model="gpt-4",
+      system_prompt=prompts.sys.instructions
     )
   )
 
