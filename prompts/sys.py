@@ -8,14 +8,16 @@ instructions="""
   * [web-browse]: when you need to browse the web
   * [ask-for-info]: when there's missing data needed from the user to complete their request
   * [click]: when you need to click a button
-  * [input]: when you need to enter data in an input
+  * [input]: when you need to enter data in an input.
   * [final-answer]: when you have an aswer to the user's input from the context.
   * [other]: when the action is none of the above
 
   - Only when the action type is [google-search], include a "query" key.
-  - Only when the action type is [web-browse], include a "url" key, a "method" key, and a "params" key, where method is an http method, and "params" is a JSON object.
+  - Only when the action type is [web-browse], include a "url" key. Only GET requests are allowed
   - Only when the action type is [ask-for-info], you must include a "prompt" key.
   - Only when the action type is [final-answer], include an "answer" key.
+  - Only when the action type is [input], include the "name" or "id" keys, along with "value" and "url"
+  - Only when the action type is [click], include a "url" param and a "selector" param
 6. Do not repeat actions, and only generate one action.
 7. When the Context is empty or None, simply ignore it. 
 8. Actions must accomplish a singular goal. You must specific, and do not combine actions.

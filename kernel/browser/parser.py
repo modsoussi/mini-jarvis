@@ -31,14 +31,9 @@ class Parser(html.parser.HTMLParser):
       elif tag == "input":
         self.output = self.output + "\n" + "\t"*self.pre_tabs + f"[input"
         
-        if "name" in self.cur_attrs.keys():
-          self.output = self.output + f" name={self.cur_attrs['name']}"
-        
-        if "value" in self.cur_attrs.keys():
-          self.output = self.output + f" value={self.cur_attrs['value']}"
-        
-        if "type" in self.cur_attrs.keys():
-          self.output = self.output + f" type={self.cur_attrs['type']}"
+        for name, val in self.cur_attrs.items():
+          if name != "class":
+            self.output = self.output + " " + f"{name}=\"{val}\""
           
         self.output = self.output + "]"
       elif tag in ["h1", "h2", "h3", "h4", "h5", "h6"]:
@@ -49,11 +44,9 @@ class Parser(html.parser.HTMLParser):
       elif tag == "button":
         self.output = self.output + f"[button"
         
-        if 'type' in self.cur_attrs.keys():
-          self.output = self.output + f" type={self.cur_attrs['type']}"
-          
-        if 'id' in self.cur_attrs.keys():
-          self.output = self.output + f" id={self.cur_attrs['id']}"
+        for name, val in self.cur_attrs.items():
+          if name != "class":
+            self.output = self.output + " " + f"{name}=\"{val}\""
         
         self.output = self.output + "]"
         self.pre_tabs += 2
@@ -87,14 +80,9 @@ class Parser(html.parser.HTMLParser):
     if tag == "input":
       self.output = self.output + "\n" + "\t"*self.pre_tabs + f"[input"
       
-      if "name" in self.cur_attrs.keys():
-        self.output = self.output + f" name={self.cur_attrs['name']}"
-      
-      if "value" in self.cur_attrs.keys():
-        self.output = self.output + f" value={self.cur_attrs['value']}"
-      
-      if "type" in self.cur_attrs.keys():
-        self.output = self.output + f" type={self.cur_attrs['type']}"
+      for name, val in self.cur_attrs.items():
+        if name != "class":
+          self.output = self.output + " " + f"{name}=\"{val}\""
         
       self.output = self.output + "]"
     
