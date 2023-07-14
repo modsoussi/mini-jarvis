@@ -32,7 +32,7 @@ class Parser(html.parser.HTMLParser):
         self.output = self.output + "\n" + "\t"*self.pre_tabs + f"[input"
         
         for name, val in self.cur_attrs.items():
-          if name != "class":
+          if name not in ["class", "style", "aria-label"]:
             self.output = self.output + " " + f"{name}=\"{val}\""
           
         self.output = self.output + "]"
@@ -45,7 +45,7 @@ class Parser(html.parser.HTMLParser):
         self.output = self.output + f"[button"
         
         for name, val in self.cur_attrs.items():
-          if name != "class":
+          if name not in ["class", "style", "aria-label"]:
             self.output = self.output + " " + f"{name}=\"{val}\""
         
         self.output = self.output + "]"
@@ -81,7 +81,7 @@ class Parser(html.parser.HTMLParser):
       self.output = self.output + "\n" + "\t"*self.pre_tabs + f"[input"
       
       for name, val in self.cur_attrs.items():
-        if name != "class":
+        if name not in ["class", "style", "aria-label"]:
           self.output = self.output + " " + f"{name}=\"{val}\""
         
       self.output = self.output + "]"
