@@ -6,12 +6,19 @@ ACTION_TYPE_ASK_FOR_INFO = "[ask-for-info]"
 ACTION_TYPE_WEB_BROWSE = "[web-browse]"
 ACTION_TYPE_SEARCH = "[google-search]"
 ACTION_TYPE_FINAL = "[final-answer]"
+ACTION_TYPE_INPUT = "[input]"
+ACTION_TYPE_CLICK = "[click]"
 
 class Action:
-  def __init__(self, action):
+  def __init__(self, action, browser: Browser = None ):
     try:
       self.raw = json.loads(action)
       self.action_type = self.raw["action_type"]
+      
+      self.browser = browser
+      if self.browser is None:
+        self.browser = Browser()
+        
     except json.JSONDecodeError:
       print(f"json.JSONDecodeError: {self.raw}")
     
@@ -19,30 +26,53 @@ class Action:
       self.prompt = self.raw["prompt"]
     elif self.action_type == ACTION_TYPE_WEB_BROWSE:
       self.url = self.raw["url"]
-      self.method = self.raw["method"]
+      self.method = "GET"
       
       self.params = None
       if not self.raw.get("params") is None:
         self.params = self.raw["params"]
-    elif self.action_type == ACTION_TYPE_FINAL:
-      self.answer = self.raw["answer"]
     elif self.action_type == ACTION_TYPE_SEARCH:
       self.query = self.raw["query"]
+    elif self.action_type == ACTION_TYPE_INPUT:
+      attrs = {}
+      if "name" in self.raw:
+        attrs["name"] = self.raw["name"]
+      if "id" in self.raw:
+        attrs["id"] = self.raw["id"]
+        
+      if "value" in self.raw:
+        self.value = self.raw["value"]
+      self.attrs = attrs
+      if "url" in self.raw:
+        self.url = self.raw["url"]
+    elif self.action_type == ACTION_TYPE_CLICK:
+      if "url" in self.raw:
+        self.url = self.raw["url"]
+      
+      self.selector = self.raw["selector"]
+    elif self.action_type == ACTION_TYPE_FINAL:
+      self.answer = self.raw["answer"]
       
   def exec(self):
     if self.action_type == ACTION_TYPE_ASK_FOR_INFO:
       return input(f"<< {self.prompt}\n>> ")
     elif self.action_type == ACTION_TYPE_WEB_BROWSE:
       if self.method == "POST":
-        result = Browser().post(self.url, self.params)
+        result = self.browser.post(self.url, self.params)
         return result.strip("\n")
       elif self.method == "GET":
-        soup = Browser().get(self.url, self.params)
-        return soup.strip("\n ")
+        result = self.browser.get(self.url, self.params)
+        return result.strip("\n ")
     elif self.action_type == ACTION_TYPE_SEARCH:
-      return Browser().google_search(self.query)
+      return self.browser.google_search(self.query)
+    elif self.action_type == ACTION_TYPE_INPUT:
+      return self.browser.input(self.url, attrs=self.attrs, value=self.value)
+    elif self.action_type == ACTION_TYPE_CLICK:
+      return self.browser.click(self.url, self.selector)
     elif self.action_type == ACTION_TYPE_FINAL:
       return self.answer
+    else:
+      raise Exception(f"Action type {self.action_type} not implemented:\n{self.raw}")
       
   def desc(self) -> str:
     if self.action_type == ACTION_TYPE_ASK_FOR_INFO:
@@ -57,6 +87,10 @@ class Action:
         return f"Submitting form on {self.url}"
     elif self.action_type == ACTION_TYPE_SEARCH:
       return f"Google Search for \"{self.query}\""
+    elif self.action_type == ACTION_TYPE_INPUT:
+      return f"Filling out form on {self.url}"
+    elif self.action_type == ACTION_TYPE_CLICK:
+      return f"Clicked {self.selector}"
     elif self.action_type == ACTION_TYPE_FINAL:
       return "Final Answer:"
       
