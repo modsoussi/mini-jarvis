@@ -12,7 +12,7 @@ if __name__ == "__main__":
     config=kernel.Config(
       openai_key=os.getenv("OPENAI_API_KEY"),
       # model="gpt-3.5-turbo-16k",
-      model="gpt-4",
+      model="gpt-4-32k",
       system_prompt=prompts.sys.instructions
     )
   )
