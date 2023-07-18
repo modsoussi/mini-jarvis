@@ -36,8 +36,6 @@ Context:
 {}
 """.format(prompt, "\n".join([f"* {a[0]}: {a[1]}" for a in context if len(a) > 0]))
     
-    # print(prompt)
-    
     self.validate_prompt_length(prompt)
     
     if self.config.model.startswith('text-'):
