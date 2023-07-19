@@ -1,68 +1,59 @@
-# MiniJarvis
+# AI Agent Powered by OpenAI GPT Model
 
-Mini Jarvis is an AI Assistant program that utilizes the OpenAI GPT-3.5 Turbo model to provide interactive assistance and perform various tasks based on user input.
+This project is about an AI agent that is powered by OpenAI's GPT model, used to interact with users to resolve their problems or queries. The agent can generate different types of actions based on user inputs and execute actions like google searching, web browsing, asking for information, inputting data, clicking a button, or returning a final answer.
 
-## Features
+## Core Features
 
-- Generates human-like responses using the OpenAI GPT-3.5 Turbo model.
-- Supports natural language conversations and prompts.
-- Performs actions such as web browsing, form submission, and Google searches.
-- Provides a customizable system prompt for initiating conversations.
-- Handles different types of user interactions, including asking for information and providing final answers.
+1. **Interactions**: The AI agent interacts with users to understand their needs and fulfil them by performing a series of actions.
 
-## Installation
+2. **Action Execution**: The system can execute the following action types:
+    - *Google search*: Uses Google to query any information the user requests.
+    - *Web browsing*: The agent can browse the web, either to extract information or open a specified URL.
+    - *Ask for information*: When more data from the user is required to complete the request, the agent will prompt the user to provide this necessary information.
+    - *Input data*: If there's an input field in a form that the agent needs to complete, it will fill in this data.
+    - *Button Clicks*: The agent can click buttons on a web page when required to fulfil a user request.
+    - *Final Answer*: Once the agent has a resolution to the user's request, it can produce a final output.
 
-1. Clone the repository:
+3. **Context Awareness**: The AI agent generates its actions based on the user's input and the overall context.
 
-```
-git clone https://github.com/modsoussi/mini-jarvis.git
-```
+## Installation and Setup
 
-2. Navigate to the project directory:
+1. Clone the repository.
 
-```
-cd mini-jarvis
-```
+2. Create a virtual environment:
+    ```sh
+    python -m venv .venv
+    source ./.venv/bin/activate  # For Unix systems
+    .\.venv\Scripts\activate  # For Windows
+    ```
 
-3. Set up the virtual environment (optional but recommended):
+3. Install all the required libraries mentioned in the `requirements.txt` file:
+    ```sh
+    pip install -r requirements.txt
+    ```
 
-```
-python3 -m venv venv
-source venv/bin/activate
-```
+4. Set up environment variables. You need to provide the OpenAI GPT model key. Save the key in a `.env` file in the project root directory:
+    ```sh
+    echo OPENAI_API_KEY=yourkey >> .env
+    ```
 
-4. Install the required dependencies:
-
-```
-pip install -r requirements.txt
-```
+5. Now, run `app.py`:
+    ```sh
+    python app.py
+    ```
 
 ## Usage
 
-1. Make sure you are in the project directory and that the virtual environment is activated (if used).
+- Once the application starts running, it'll prompt for a user input.
+- The program expects the user to input a question or request. The AI agent will then determine the necessary action and execute it.
+- If the input command is `:q`, the program will quit.
 
-2. Set your OpenAI API key as an environment variable:
+## Contributions
 
-```
-export OPENAI_API_KEY=your-api-key
-```
+Contributions, issues and feature requests are welcome!
 
-3. Run the Mini Jarvis program:
+## Note
 
-```
-python app.py
-```
+This project uses the OpenAI API, and it's required to have an API key. The project is for educational and research purposes and depends on OpenAI usage policy and restrictions.
 
-4. Once the program is running, you can interact with Mini Jarvis by entering your input at the prompt (`>>`). You can ask questions, provide instructions, or engage in a conversation.
-
-5. To exit the program, enter `:q` at the prompt.
-
-## Contributing
-
-Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
-
-### Generated with DocaAI
+Please make sure to update tests as appropriate. The usage of the project falls under the responsibility of the user, and the maintainers are not liable for any misuse.
