@@ -20,12 +20,13 @@ class Browser:
     if url.startswith('/url?'):
       url = f"https://www.google.com{url}"
       
-    new_context = self.__browser.new_context()
-    page = new_context.new_page()
+    context = self.__browser.new_context()
+    page = context.new_page()
     
     self.__pages[url] = page
     
     page.goto(url)
+    page.wait_for_load_state()
     response = self.parser.handle(page.content())
     return response
   

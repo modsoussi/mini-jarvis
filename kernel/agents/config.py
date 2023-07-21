@@ -20,3 +20,7 @@ class Config:
     self.model = model
     self.max_tokens = max_tokens
     self.stream = stream
+    
+    self.max_len_context = 8092
+    if self.model == 'gpt-2.3-turbo-16k':
+      self.max_len_context = 16384
