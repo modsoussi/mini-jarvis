@@ -21,15 +21,14 @@ class CompletionAgent(Agent):
   
   def validate_prompt_length(self, prompt):
     total_tokens = len(self.tokenizer.encode(prompt))
-    if total_tokens > (16385 - 1024):
-      print(self.tokenizer.max_token_value)
+    if total_tokens > (self.config.max_len_context - self.config.max_tokens):
       print(prompt)
-      raise Exception(f"Too many tokens: {total_tokens}")
+      raise Exception(f"Too many tokens: {total_tokens + self.config.max_tokens}")
   
   def get_completion(self, user_prompt: str, context: list[tuple([])] = None) -> str:
     prompt = user_prompt
     
-    if not context is None:
+    if context is not None:
       prompt = """{}
    
 Context:

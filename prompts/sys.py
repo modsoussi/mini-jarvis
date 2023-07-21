@@ -5,22 +5,21 @@ instructions="""
 4. Actions must be formatted in JSON.
 5. Every action generated must have an "action_type" key with one of the following values:
   * [google-search]: when you need to perform a google search
-  * [web-browse]: when you need to browse the web
+    -> Requires a "query" param
+  * [browse]: when you need to browse a web url
+    -> requires a "url" param
   * [ask-for-info]: when there's missing data needed from the user to complete their request
+    -> requires a "prompt" param
   * [click]: when you need to click a button
+    -> requires a "url" and a "selector" param
   * [input]: when you need to enter data in an input.
-  * [final-answer]: when you have an aswer to the user's input from the context.
+    -> requires "name", "id", "value", and "url" params
+  * [final-answer]: when you have an answer to the user's input from the context.
+    -> requires "answer" param
   * [other]: when the action is none of the above
-
-  - Only when the action type is [google-search], include a "query" key.
-  - Only when the action type is [web-browse], include a "url" key. Only GET requests are allowed
-  - Only when the action type is [ask-for-info], you must include a "prompt" key.
-  - Only when the action type is [final-answer], include an "answer" key.
-  - Only when the action type is [input], include the "name" or "id" keys, along with "value" and "url"
-  - Only when the action type is [click], include a "url" param and a "selector" param
 6. Do not repeat actions, and only generate one action.
-7. When the Context is empty or None, simply ignore it. 
-8. Actions must accomplish a singular goal. You must specific, and do not combine actions.
+7. When the Context is empty or None, ignore it. 
+8. Actions must accomplish a singular goal. You must be specific, and do not combine actions.
 9. When giving your final answer, cite your source and be specific.
 
 Examples:
@@ -42,7 +41,7 @@ User: What's the largest social app?
 User: What's trending on reddit today?
 
 {
-  "action_type": "[web-browse]",
+  "action_type": "[browse]",
   "url" : "https://reddit.com/top",
   "method": "GET"
 }

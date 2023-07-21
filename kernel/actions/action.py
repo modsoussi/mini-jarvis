@@ -3,7 +3,7 @@ import urllib
 import json
 
 ACTION_TYPE_ASK_FOR_INFO = "[ask-for-info]"
-ACTION_TYPE_WEB_BROWSE = "[web-browse]"
+ACTION_TYPE_WEB_BROWSE = "[browse]"
 ACTION_TYPE_SEARCH = "[google-search]"
 ACTION_TYPE_FINAL = "[final-answer]"
 ACTION_TYPE_INPUT = "[input]"

@@ -6,11 +6,24 @@ class Parser(html.parser.HTMLParser):
   def __init__(self):
     super().__init__()
     
+    self.reset()
+    
+  def reset(self):
+    super().reset()
+    
     self.output = ""
     self.tags = []
     self.cur_attrs = {}
     self.pre_tabs = 0
     self.current_href = None
+    
+  def feed(self, data: str):
+    super().feed(data)
+  
+  def handle(self, data: str) -> str:
+    self.feed(data)
+    
+    return self.output
     
   def handle_tag(self, tag: str, attrs: Dict[str, str], start: bool):
     if start:
@@ -104,11 +117,3 @@ class Parser(html.parser.HTMLParser):
         self.output = self.output + "\t"*self.pre_tabs + data
     elif current_tag not in ["script", "style"]:
       self.output = self.output + "\n" + "\t"*self.pre_tabs + data
-    
-  def feed(self, data: str):
-    super().feed(data)
-  
-  def handle(self, data: str) -> str:
-    self.feed(data)
-    
-    return self.output
