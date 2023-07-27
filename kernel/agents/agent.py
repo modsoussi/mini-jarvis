@@ -38,10 +38,10 @@ Memory:
 Action Input:
 {}
 """.format(
-  prompt,
-  "\n".join([f"* {mem}" for mem in context.memory]),
-  context.input,
-  )
+    prompt,
+    "\n".join([f"* {mem}" for mem in context.memory]),
+    context.input,
+    )
     
     self.validate_prompt_length(prompt)
     
