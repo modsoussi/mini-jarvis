@@ -25,26 +25,8 @@ class CompletionAgent(Agent):
     if total_tokens > (self.config.max_len_context - self.config.max_tokens):
       print(prompt)
       raise Exception(f"Too many tokens: {total_tokens + self.config.max_tokens}")
-  
-  def get_completion(self, user_prompt: str, context: Context = None) -> str:
-    prompt = user_prompt
     
-    if context is not None:
-      prompt = """{}
-   
-Memory:
-{}
-
-Action Input:
-{}
-""".format(
-    prompt,
-    "\n".join([f"* {mem}" for mem in context.memory]),
-    context.input,
-    )
-    
-    self.validate_prompt_length(prompt)
-    
+  def handle_prompt(self, prompt: str) -> str:
     if self.config.model.startswith('text-'):
       response = openai.Completion.create(
         model=self.config.model,
@@ -76,6 +58,27 @@ Action Input:
       )
       
       return response.choices[0].message.content
+  
+  def get_completion(self, user_prompt: str, context: Context = None) -> str:
+    prompt = user_prompt
+    
+    if context is not None:
+      prompt = """{}
+   
+Memory:
+{}
+
+Action Input:
+{}
+""".format(
+    prompt,
+    "\n".join([f"* {mem}" for mem in context.memory]),
+    context.input,
+    )
+    
+    self.validate_prompt_length(prompt)
+    
+    return self.handle_prompt(prompt)
     
 class ChatAgent(Agent):
   def __init__(self,
