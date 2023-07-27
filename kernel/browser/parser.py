@@ -21,6 +21,7 @@ class Parser(html.parser.HTMLParser):
     super().feed(data)
   
   def handle(self, data: str) -> str:
+    self.reset()
     self.feed(data)
     
     return self.output

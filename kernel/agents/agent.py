@@ -1,4 +1,5 @@
 from kernel.agents.config import Config
+from kernel.context import Context
 from typing import Dict
 import openai
 import tiktoken
@@ -25,15 +26,22 @@ class CompletionAgent(Agent):
       print(prompt)
       raise Exception(f"Too many tokens: {total_tokens + self.config.max_tokens}")
   
-  def get_completion(self, user_prompt: str, context: list[tuple([])] = None) -> str:
+  def get_completion(self, user_prompt: str, context: Context = None) -> str:
     prompt = user_prompt
     
     if context is not None:
       prompt = """{}
    
-Context:
+Memory:
 {}
-""".format(prompt, "\n".join([f"* {a[0]}: {a[1]}" for a in context if len(a) > 0]))
+
+Action Input:
+{}
+""".format(
+  prompt,
+  "\n".join([f"* {mem}" for mem in context.memory]),
+  context.input,
+  )
     
     self.validate_prompt_length(prompt)
     
