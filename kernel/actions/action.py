@@ -18,9 +18,12 @@ class Action:
       self.browser = browser
       if self.browser is None:
         self.browser = Browser()
-        
     except json.JSONDecodeError:
       print(f"json.JSONDecodeError: {self.raw}")
+    
+    self.past_result = None
+    if "past_result" in self.raw:
+      self.past_result = self.raw["past_result"]
     
     if self.action_type == ACTION_TYPE_ASK_FOR_INFO:
       self.prompt = self.raw["prompt"]

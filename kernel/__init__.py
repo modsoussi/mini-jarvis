@@ -2,6 +2,7 @@ from kernel.agents.config import Config
 from kernel.agents import CompletionAgent, ChatAgent
 from kernel.actions.action import Action, ACTION_TYPE_FINAL, ACTION_TYPE_ASK_FOR_INFO, ACTION_TYPE_SEARCH, ACTION_TYPE_WEB_BROWSE
 from kernel.browser import Browser
+from kernel.context import Context
 
 __all__ = [
   'ChatAgent',
@@ -12,5 +13,6 @@ __all__ = [
   'ACTION_TYPE_FINAL',
   'ACTION_TYPE_SEARCH',
   'ACTION_TYPE_WEB_BROWSE',
-  'Browser'
+  'Browser',
+  'Context'
 ]

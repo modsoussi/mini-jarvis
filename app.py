@@ -12,7 +12,7 @@ if __name__ == "__main__":
     config=kernel.Config(
       openai_key=os.getenv("OPENAI_API_KEY"),
       model="gpt-4",
-      system_prompt=prompts.sys.instructions
+      system_prompt=prompts.sys.action_gen
     )
   )
 
@@ -23,7 +23,7 @@ if __name__ == "__main__":
         exit(0)
       
       browser = kernel.Browser(p)
-      context = []
+      context = kernel.Context()
       
       while True:
         action = kernel.Action(action_agent.get_completion(user_input, context), browser=browser)
@@ -35,7 +35,9 @@ if __name__ == "__main__":
           browser.close()
           exit(0)
         
-        context.append((action.desc(), result))
+        context.input = result
+        if action.past_result is not None:
+          context.add_memory(action.past_result)
     
     except EOFError:
       if browser is not None:
