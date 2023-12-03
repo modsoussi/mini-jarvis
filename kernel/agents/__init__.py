@@ -1,5 +1,5 @@
-from kernel.agents.agent import CompletionAgent
+from kernel.agents.agent import ChatCompletionAgent
 
 __all__ = [
-  'CompletionAgent',
+  'ChatCompletionAgent',
 ]

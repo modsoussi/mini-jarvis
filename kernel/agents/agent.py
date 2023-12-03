@@ -10,7 +10,7 @@ class Agent:
     if self.config.model is None:
       raise Exception("Agent configuration model cannot be None")
     
-class CompletionAgent(Agent):
+class ChatCompletionAgent(Agent):
   def __init__(self,
                openai_key: str,
                config: Config,
