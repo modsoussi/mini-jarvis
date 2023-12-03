@@ -1,16 +1,12 @@
 import kernel
-import os
 import prompts.sys
 from playwright.sync_api import sync_playwright
 
-from dotenv import load_dotenv
-
-load_dotenv()
+k = kernel.Kernel()
 
 if __name__ == "__main__":
-  action_agent = kernel.CompletionAgent(
+  action_agent = k.new_completion_agent(
     config=kernel.Config(
-      openai_key=os.getenv("OPENAI_API_KEY"),
       model="gpt-4",
       system_prompt=prompts.sys.action_gen
     )
