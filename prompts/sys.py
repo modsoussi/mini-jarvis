@@ -11,10 +11,6 @@ all actions you've taken and an action input.
     -> requires a "url" param
   * [ask-for-info]: when there's missing data needed from the user to complete their request
     -> requires a "prompt" param
-  * [click]: when you need to click a button
-    -> requires a "url" and a "selector" param
-  * [input]: when you need to enter data in an input.
-    -> requires "name", "id", "value", and "url" params
   * [final-answer]: when you have an answer to the user's input from the context.
     -> requires "answer" param
   * [other]: when the action is none of the above

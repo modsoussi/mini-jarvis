@@ -7,7 +7,7 @@ k = kernel.Kernel()
 if __name__ == "__main__":
   action_agent = k.new_completion_agent(
     config=kernel.Config(
-      model="gpt-4",
+      model="gpt-4-1106-preview",
       system_prompt=prompts.sys.action_gen
     )
   )
@@ -23,7 +23,7 @@ if __name__ == "__main__":
       
       while True:
         action = kernel.Action(action_agent.get_completion(user_input, context), browser=browser)
-        print(action.desc())
+        print(action.raw)
         result = action.exec()
         
         if action.action_type == kernel.ACTION_TYPE_FINAL:
@@ -33,7 +33,7 @@ if __name__ == "__main__":
         
         context.input = result
         if action.past_result is not None:
-          context.add_memory(action.past_result)
+          context.add(action.past_result)
     
     except EOFError:
       if browser is not None:

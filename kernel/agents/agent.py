@@ -74,6 +74,6 @@ Action Input:
     context.input,
     )
     
-    self.validate_prompt_length(prompt)
+    # self.validate_prompt_length(prompt)
     
     return self.handle_prompt(prompt)
