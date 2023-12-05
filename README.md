@@ -90,8 +90,8 @@ python app.py
 
 Some things you can ask MiniJarvis to do:
 - What are the top 5 posts on Hacker News today?
-- Summarize the comments on the top post on Hacker News?
-- Find me Airbnb engineering openins in Paris, France
+- Summarize the comments on the top post on Hacker News
+- Find me Airbnb engineering openings in Paris, France
 
 ## License
 
