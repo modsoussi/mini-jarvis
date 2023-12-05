@@ -1,17 +1,13 @@
 import kernel
-import os
 import prompts.sys
 from playwright.sync_api import sync_playwright
 
-from dotenv import load_dotenv
-
-load_dotenv()
+k = kernel.Kernel()
 
 if __name__ == "__main__":
-  action_agent = kernel.CompletionAgent(
+  action_agent = k.new_completion_agent(
     config=kernel.Config(
-      openai_key=os.getenv("OPENAI_API_KEY"),
-      model="gpt-4",
+      model="gpt-4-1106-preview",
       system_prompt=prompts.sys.action_gen
     )
   )
@@ -37,7 +33,7 @@ if __name__ == "__main__":
         
         context.input = result
         if action.past_result is not None:
-          context.add_memory(action.past_result)
+          context.add(action.past_result)
     
     except EOFError:
       if browser is not None:

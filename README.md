@@ -1,59 +1,98 @@
-# AI Agent Powered by OpenAI GPT Model
+# Mini-Jarvis
 
-This project is about an AI agent that is powered by OpenAI's GPT model, used to interact with users to resolve their problems or queries. The agent can generate different types of actions based on user inputs and execute actions like google searching, web browsing, asking for information, inputting data, clicking a button, or returning a final answer.
+An AI agent that uses the GPT model to generate actions in order to achieve a given goal. It can perform complex actions such as browsing, clicking, input filling, and asking for additional information.
 
-## Core Features
+## Features
 
-1. **Interactions**: The AI agent interacts with users to understand their needs and fulfil them by performing a series of actions.
+- Utilizes GPT model to generate conversational responses.
+- Performs browsing activity.
+- Searches on Google.
+- Can click on UI elements within a webpage.
+- Fills out form inputs on pages.
+- Asks for extra information from users when needed.
 
-2. **Action Execution**: The system can execute the following action types:
-    - *Google search*: Uses Google to query any information the user requests.
-    - *Web browsing*: The agent can browse the web, either to extract information or open a specified URL.
-    - *Ask for information*: When more data from the user is required to complete the request, the agent will prompt the user to provide this necessary information.
-    - *Input data*: If there's an input field in a form that the agent needs to complete, it will fill in this data.
-    - *Button Clicks*: The agent can click buttons on a web page when required to fulfil a user request.
-    - *Final Answer*: Once the agent has a resolution to the user's request, it can produce a final output.
+## Installation
 
-3. **Context Awareness**: The AI agent generates its actions based on the user's input and the overall context.
+You can install the AI Kernel through either pip or conda. Follow the steps below:
 
-## Installation and Setup
+### Pip
 
-1. Clone the repository.
+Create a virtual environment and activate it:
 
-2. Create a virtual environment:
-    ```sh
-    python -m venv .venv
-    source ./.venv/bin/activate  # For Unix systems
-    .\.venv\Scripts\activate  # For Windows
-    ```
+```shell
+python -m venv venv
+source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+```
 
-3. Install all the required libraries mentioned in the `requirements.txt` file:
-    ```sh
-    pip install -r requirements.txt
-    ```
+Clone the repository and navigate to the project directory:
 
-4. Set up environment variables. You need to provide the OpenAI GPT model key. Save the key in a `.env` file in the project root directory:
-    ```sh
-    echo OPENAI_API_KEY=yourkey >> .env
-    ```
+```shell
+git clone <repository_url>
+cd <repository_directory>
+```
 
-5. Now, run `app.py`:
-    ```sh
-    python app.py
-    ```
+Then, install the required packages:
+
+```shell
+pip install -r pip.env
+```
+
+### Conda
+
+First, clone the repository:
+
+```shell
+git clone <repository_url>
+```
+
+Then, create and activate a Conda environment:
+
+```shell
+conda create -n myenv -f conda.env
+conda activate myenv
+```
+
+Navigate to the project directory:
+
+```shell
+cd <repository_directory>
+```
+
+## Set Up
+
+Create a .env file and add the OpenAI API key.
+
+```shell
+OPENAI_API_KEY="YOUR_OPEN_AI_API_KEY"
+```
 
 ## Usage
 
-- Once the application starts running, it'll prompt for a user input.
-- The program expects the user to input a question or request. The AI agent will then determine the necessary action and execute it.
-- If the input command is `:q`, the program will quit.
+Before running, make sure to activate your Python environment:
 
-## Contributions
+For pip
 
-Contributions, issues and feature requests are welcome!
+```shell
+source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+```
 
-## Note
+For conda
 
-This project uses the OpenAI API, and it's required to have an API key. The project is for educational and research purposes and depends on OpenAI usage policy and restrictions.
+```shell
+conda activate myenv
+```
 
-Please make sure to update tests as appropriate. The usage of the project falls under the responsibility of the user, and the maintainers are not liable for any misuse.
+Then run the kernel with:
+
+```shell
+python app.py
+```
+
+Some things you can ask MiniJarvis to do:
+- What are the top 5 posts on Hacker News today?
+- Summarize the comments on the top post on Hacker News
+- Find me Airbnb engineering openings in Paris, France
+
+## License
+
+This project is licensed under the terms of the MIT license.

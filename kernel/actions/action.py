@@ -10,8 +10,13 @@ ACTION_TYPE_INPUT = "[input]"
 ACTION_TYPE_CLICK = "[click]"
 
 class Action:
-  def __init__(self, action, browser: Browser = None ):
+  def __init__(self, action: str, browser: Browser = None ):
     try:
+      if (action.startswith('```json')):
+        action = action[7:len(action)-3]
+      
+      # print(action)
+      # print('*** ----------------------- ***')
       self.raw = json.loads(action)
       self.action_type = self.raw["action_type"]
       
@@ -19,7 +24,7 @@ class Action:
       if self.browser is None:
         self.browser = Browser()
     except json.JSONDecodeError:
-      print(f"json.JSONDecodeError: {self.raw}")
+      print(f"json.JSONDecodeError: {action}")
     
     self.past_result = None
     if "past_result" in self.raw:

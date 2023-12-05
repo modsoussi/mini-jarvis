@@ -17,7 +17,7 @@ class Browser:
     self.__browser.close()
     
   def get(self, url: str, params: Dict = None) -> str:
-    if url.startswith('/url?'):
+    if url.startswith('/url?') or url.startswith('/search?'):
       url = f"https://www.google.com{url}"
       
     context = self.__browser.new_context()

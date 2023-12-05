@@ -9,7 +9,7 @@ class Context:
   def memory(self):
     return self._memory
   
-  def add_memory(self, mem):
+  def add(self, mem):
     self._memory.append(mem)
   
   @property
