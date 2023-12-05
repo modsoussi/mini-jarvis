@@ -15,6 +15,8 @@ class Action:
       if (action.startswith('```json')):
         action = action[7:len(action)-3]
       
+      print(action)
+      print('*** ----------------------- ***')
       self.raw = json.loads(action)
       self.action_type = self.raw["action_type"]
       
