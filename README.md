@@ -66,7 +66,7 @@ Create a .env file and add the OpenAI API key.
 OPENAI_API_KEY="YOUR_OPEN_AI_API_KEY"
 ```
 
-## Running the Kernel
+## Usage
 
 Before running, make sure to activate your Python environment:
 
@@ -87,6 +87,11 @@ Then run the kernel with:
 ```shell
 python app.py
 ```
+
+Some things you can ask MiniJarvis to do:
+- What are the top 5 posts on Hacker News today?
+- Summarize the comments on the top post on Hacker News?
+- Find me Airbnb engineering openins in Paris, France
 
 ## License
 
