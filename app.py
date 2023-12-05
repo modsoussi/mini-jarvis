@@ -23,7 +23,7 @@ if __name__ == "__main__":
       
       while True:
         action = kernel.Action(action_agent.get_completion(user_input, context), browser=browser)
-        print(action.raw)
+        print(action.desc())
         result = action.exec()
         
         if action.action_type == kernel.ACTION_TYPE_FINAL:
