@@ -13,8 +13,6 @@ An AI agent that uses the GPT model to generate actions in order to achieve a gi
 
 ## Installation
 
-You can install the AI Kernel through either pip or conda. Follow the steps below:
-
 ### Pip
 
 Create a virtual environment and activate it:
