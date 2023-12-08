@@ -25,8 +25,8 @@ source venv/bin/activate  # On Windows use `venv\Scripts\activate`
 Clone the repository and navigate to the project directory:
 
 ```shell
-git clone <repository_url>
-cd <repository_directory>
+git clone https://github.com/modsoussi/mini-jarvis
+cd mini-jarvis
 ```
 
 Then, install the required packages:
@@ -40,7 +40,7 @@ pip install -r pip.env
 First, clone the repository:
 
 ```shell
-git clone <repository_url>
+git clone https://github.com/modsoussi/mini-jarvis
 ```
 
 Then, create and activate a Conda environment:
@@ -53,7 +53,7 @@ conda activate myenv
 Navigate to the project directory:
 
 ```shell
-cd <repository_directory>
+cd mini-jarvis
 ```
 
 ## Set Up
