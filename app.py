@@ -7,7 +7,7 @@ k = kernel.Kernel()
 if __name__ == "__main__":
   action_agent = k.new_completion_agent(
     config=kernel.Config(
-      model="gpt-4-1106-preview",
+      model="gpt-4o",
       system_prompt=prompts.sys.action_gen
     )
   )
